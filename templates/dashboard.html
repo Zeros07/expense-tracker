@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard - MoneyTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .user-info h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .user-info p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .summary-card.income {
+            border-top: 4px solid #48bb78;
+        }
+
+        .summary-card.expense {
+            border-top: 4px solid #f56565;
+        }
+
+        .summary-card.balance {
+            border-top: 4px solid #667eea;
+        }
+
+        .summary-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .income .summary-icon {
+            color: #48bb78;
+        }
+
+        .expense .summary-icon {
+            color: #f56565;
+        }
+
+        .balance .summary-icon {
+            color: #667eea;
+        }
+
+        .summary-card h3 {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .summary-card .amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        /* Add Button */
+        .add-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .add-btn i {
+            margin-right: 8px;
+        }
+
+        /* Transactions */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 15px;
+        }
+
+        .transactions-list {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.3s ease;
+            position: relative;
+            gap: 12px;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-item:hover {
+            background: #f7fafc;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+
+        .transaction-icon.income {
+            background: #c6f6d5;
+            color: #48bb78;
+        }
+
+        .transaction-icon.expense {
+            background: #fed7d7;
+            color: #f56565;
+        }
+
+        .transaction-content {
+            flex: 1;
+            min-width: 0; /* Allow shrinking */
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .transaction-meta {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+            word-break: break-all;
+            line-height: 1.2;
+        }
+
+        .transaction-amount.income {
+            color: #48bb78;
+        }
+
+        .transaction-amount.expense {
+            color: #f56565;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #718096;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #cbd5e0;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid #48bb78;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-width: 320px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left-color: #48bb78;
+        }
+
+        .notification.error {
+            border-left-color: #f56565;
+        }
+
+        .notification-icon {
+            font-size: 20px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 2px;
+        }
+
+        .notification-message {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: #a0aec0;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .notification-close:hover {
+            color: #718096;
+            background: #f7fafc;
+        }
+
+        /* Flash Messages */
+        .flash-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid #48bb78;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            max-width: 320px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        /* Confirmation Dialog */
+        .confirmation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .confirmation-overlay.show {
+            display: flex;
+        }
+
+        .confirmation-dialog {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .confirmation-icon {
+            font-size: 48px;
+            color: #f56565;
+            margin-bottom: 15px;
+        }
+
+        .confirmation-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .confirmation-message {
+            color: #718096;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .confirmation-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .confirmation-btn.cancel {
+            background: #f7fafc;
+            color: #4a5568;
+        }
+
+        .confirmation-btn.cancel:hover {
+            background: #e2e8f0;
+        }
+
+        .confirmation-btn.confirm {
+            background: #f56565;
+            color: white;
+        }
+
+        .confirmation-btn.confirm:hover {
+            background: #e53e3e;
+            transform: translateY(-1px);
+        }
+
+        /* Transaction Actions */
+        .transaction-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .edit-btn {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .edit-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .delete-btn {
+            background: rgba(245, 101, 101, 0.1);
+            color: #f56565;
+        }
+
+        .delete-btn:hover {
+            background: #f56565;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Desktop layout */
+        @media (min-width: 769px) {
+            .transaction-main {
+                display: flex;
+                align-items: center;
+                flex: 1;
+                gap: 12px;
+            }
+
+            .transaction-bottom {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .transaction-item {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .transaction-item {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+            }
+
+            .transaction-icon {
+                width: 36px;
+                height: 36px;
+                margin-right: 12px;
+                font-size: 14px;
+            }
+
+            .transaction-content {
+                flex: 1;
+                min-width: 0;
+                margin-right: 8px;
+            }
+
+            .transaction-title {
+                font-size: 14px;
+                margin-bottom: 2px;
+            }
+
+            .transaction-meta {
+                font-size: 11px;
+            }
+
+            .transaction-amount {
+                font-size: 13px;
+                margin-right: 8px;
+                max-width: 120px;
+                overflow-wrap: break-word;
+            }
+
+            .action-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+
+            /* Stack layout for very small screens */
+            @media (max-width: 480px) {
+                .transaction-item {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 10px;
+                    padding: 14px 16px;
+                }
+
+                .transaction-main {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    gap: 12px;
+                }
+
+                .transaction-bottom {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    padding-left: 48px; /* Align with content */
+                }
+
+                .transaction-amount {
+                    margin-right: 0;
+                    font-size: 13px;
+                    max-width: 140px;
+                    text-align: left;
+                    font-weight: 600;
+                }
+
+                .transaction-actions {
+                    gap: 8px;
+                }
+
+                .action-btn {
+                    width: 34px;
+                    height: 34px;
+                    font-size: 13px;
+                }
+            }
+
+            /* Extra small screens */
+            @media (max-width: 360px) {
+                .transaction-amount {
+                    font-size: 12px;
+                    max-width: 110px;
+                }
+
+                .transaction-bottom {
+                    padding-left: 44px;
+                }
+
+                .action-btn {
+                    width: 30px;
+                    height: 30px;
+                    font-size: 12px;
+                }
+
+                .transaction-actions {
+                    gap: 6px;
+                }
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="user-info">
+                <h1>Hello, {{ username }}! 👋</h1>
+                <p>Here's your financial summary</p>
+            </div>
+            <a href="#" class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-message" id="flashMessage">
+                    <div class="notification-icon">✅</div>
+                    <div class="notification-content">
+                        <div class="notification-title">Success</div>
+                        <div class="notification-message">{{ messages[0] }}</div>
+                    </div>
+                    <button class="notification-close" onclick="hideFlashMessage()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card income">
+                <div class="summary-icon">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                <h3>INCOME</h3>
+                <div class="amount">Rp{{ "{:,.0f}".format(total_income).replace(",", ".") }}</div>
+            </div>
+
+            <div class="summary-card expense">
+                <div class="summary-icon">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <h3>EXPENSE</h3>
+                <div class="amount">Rp{{ "{:,.0f}".format(total_expense).replace(",", ".") }}</div>
+            </div>
+
+            <div class="summary-card balance">
+                <div class="summary-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <h3>BALANCE</h3>
+                <div class="amount">Rp{{ "{:,.0f}".format(balance).replace(",", ".") }}</div>
+            </div>
+        </div>
+
+        <!-- Add Transaction Button -->
+        <a href="/add" class="add-btn">
+            <i class="fas fa-plus"></i> Add New Transaction
+        </a>
+
+
+
+        <!-- Monthly Report -->
+        <a href="/monthly-report" class="add-btn"
+            style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-top: 10px;">
+            <i class="fas fa-calendar-alt"></i> Monthly Report
+        </a>
+
+        <!-- Transactions List -->
+        <h2 class="section-title">Recent Transactions</h2>
+
+        <div class="transactions-list">
+            {% if expenses %}
+            {% for expense in expenses %}
+            <div class="transaction-item">
+                <div class="transaction-main">
+                    <div class="transaction-icon {{ expense[2] }}">
+                        {% if expense[2] == 'income' %}
+                        <i class="fas fa-download"></i>
+                        {% else %}
+                        <i class="fas fa-upload"></i>
+                        {% endif %}
+                    </div>
+
+                    <div class="transaction-content">
+                        <div class="transaction-title">{{ expense[3] }}</div>
+                        <div class="transaction-meta">
+                            {{ expense[5] if expense[5] else "No description" }} • {{ expense[6][:16] }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="transaction-bottom">
+                    <div class="transaction-amount {{ expense[2] }}">
+                        {% if expense[2] == 'income' %}
+                        + Rp{{ "{:,.0f}".format(expense[4]).replace(",", ".") }}
+                        {% else %}
+                        - Rp{{ "{:,.0f}".format(expense[4]).replace(",", ".") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="transaction-actions">
+                        <a href="/edit/{{ expense[0] }}" class="action-btn edit-btn" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button data-expense-id="{{ expense[0] }}" class="action-btn delete-btn" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-receipt"></i>
+                <h3>No transactions yet</h3>
+                <p>Start by adding your first transaction</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification" class="notification">
+        <div class="notification-icon">✅</div>
+        <div class="notification-content">
+            <div class="notification-title" id="notificationTitle">Success</div>
+            <div class="notification-message" id="notificationMessage">Transaction saved successfully</div>
+        </div>
+        <button class="notification-close" onclick="hideNotification()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Logout Confirmation Dialog -->
+    <div id="logoutConfirmation" class="confirmation-overlay">
+        <div class="confirmation-dialog">
+            <div class="confirmation-icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <div class="confirmation-title">Logout Confirmation</div>
+            <div class="confirmation-message">
+                Are you sure you want to logout?<br>
+                You'll need to login again to access your data.
+            </div>
+            <div class="confirmation-buttons">
+                <button class="confirmation-btn cancel" onclick="hideLogoutConfirmation()">
+                    Cancel
+                </button>
+                <a href="/logout" class="confirmation-btn confirm" id="confirmLogout">
+                    Yes, Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Basic notification functions
+        function showNotification(title, message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationTitle = document.getElementById('notificationTitle');
+            const notificationMessage = document.getElementById('notificationMessage');
+
+            if (notification && notificationTitle && notificationMessage) {
+                notification.className = `notification ${type}`;
+                notificationTitle.textContent = title;
+                notificationMessage.textContent = message;
+                notification.classList.add('show');
+
+                setTimeout(() => {
+                    hideNotification();
+                }, 4000);
+            }
+        }
+
+        function hideNotification() {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.classList.remove('show');
+            }
+        }
+
+        // Logout confirmation
+        function showLogoutConfirmation() {
+            const dialog = document.getElementById('logoutConfirmation');
+            if (dialog) {
+                dialog.classList.add('show');
+            }
+        }
+
+        function hideLogoutConfirmation() {
+            const dialog = document.getElementById('logoutConfirmation');
+            if (dialog) {
+                dialog.classList.remove('show');
+            }
+        }
+
+        // Check URL parameters for notifications
+        function checkForNotifications() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const notification = urlParams.get('notification');
+
+            if (notification === 'income_success') {
+                showNotification('Success! 🎉', 'Income berhasil disimpan!', 'success');
+                // Clean URL (remove parameters)
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            else if (notification === 'expense_success') {
+                showNotification('Success! 🎉', 'Expense berhasil disimpan!', 'success');
+                // Clean URL (remove parameters)
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Setup logout confirmation
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    showLogoutConfirmation();
+                });
+            }
+
+            // Check for notifications
+            checkForNotifications();
+
+            // Auto-hide flash messages
+            const flashMessage = document.getElementById('flashMessage');
+            if (flashMessage) {
+                setTimeout(() => {
+                    hideFlashMessage();
+                }, 4000);
+            }
+
+            // Setup delete button event listeners
+            setupDeleteButtons();
+        });
+
+        function hideFlashMessage() {
+            const flashMessage = document.getElementById('flashMessage');
+            if (flashMessage) {
+                flashMessage.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    flashMessage.remove();
+                }, 300);
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('confirmation-overlay')) {
+                hideLogoutConfirmation();
+            }
+        });
+
+        // Delete confirmation
+        function confirmDelete(expenseId) {
+            if (confirm('Are you sure you want to delete this transaction? This action cannot be undone.')) {
+                // Create form and submit
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/delete/${expenseId}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // Setup delete button event listeners
+        function setupDeleteButtons() {
+            const deleteButtons = document.querySelectorAll('.delete-btn[data-expense-id]');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const expenseId = this.getAttribute('data-expense-id');
+                    confirmDelete(expenseId);
+                });
+            });
+        }
+
+
+    </script>
+</body>
+
+</html>

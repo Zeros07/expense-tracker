@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Transaction - MoneyTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            margin-right: 20px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(-2px);
+        }
+        
+        .back-btn i {
+            margin-right: 8px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+        
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* Type Selector */
+        .type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .type-option {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .type-option input {
+            display: none;
+        }
+        
+        .type-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .type-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .type-option input:checked + .type-card {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .type-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 20px;
+        }
+        
+        .income-option .type-icon {
+            background: #c6f6d5;
+            color: #48bb78;
+        }
+        
+        .expense-option .type-icon {
+            background: #fed7d7;
+            color: #f56565;
+        }
+        
+        .type-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1a202c;
+        }
+        
+        .type-card p {
+            font-size: 12px;
+            color: #718096;
+        }
+        
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234a5568'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-select:disabled {
+            background-color: #f7fafc;
+            color: #a0aec0;
+            cursor: not-allowed;
+        }
+        
+        /* Amount Input */
+        .amount-group {
+            position: relative;
+        }
+        
+        .amount-prefix {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .amount-input {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .amount-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Description */
+        .description-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .description-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Error Messages */
+        .error-message {
+            color: #e53e3e;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* Loading State */
+        .loading {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <h1>Add Transaction</h1>
+        </div>
+        
+        <!-- Form Container -->
+        <div class="form-container">
+            <form method="POST" id="expenseForm">
+                <!-- Type Selector -->
+                <div class="type-selector">
+                    <label class="type-option income-option">
+                        <input type="radio" name="type" value="income" onchange="updateCategories()">
+                        <div class="type-card">
+                            <div class="type-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <h3>Income</h3>
+                            <p>Money coming in</p>
+                        </div>
+                    </label>
+                    
+                    <label class="type-option expense-option">
+                        <input type="radio" name="type" value="expense" onchange="updateCategories()">
+                        <div class="type-card">
+                            <div class="type-icon">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <h3>Expense</h3>
+                            <p>Money going out</p>
+                        </div>
+                    </label>
+                </div>
+                
+                <!-- Category -->
+                <div class="form-group">
+                    <label for="categorySelect">
+                        <i class="fas fa-tag"></i> Category
+                    </label>
+                    <select name="category" id="categorySelect" class="form-select" required disabled>
+                        <option value="" selected disabled>Select a type first</option>
+                    </select>
+                    <div id="categoryError" class="error-message">Please select a category</div>
+                </div>
+                
+                <!-- Amount -->
+                <div class="form-group">
+                    <label for="amountInput">
+                        <i class="fas fa-money-bill-wave"></i> Amount
+                    </label>
+                    <div class="amount-group">
+                        <span class="amount-prefix">Rp</span>
+                        <input type="text" 
+                               name="amount" 
+                               id="amountInput"
+                               class="amount-input"
+                               placeholder="0"
+                               required
+                               onkeyup="formatCurrency(this)">
+                    </div>
+                    <input type="hidden" name="amount_raw" id="amountRaw">
+                    <div id="amountError" class="error-message">Please enter a valid amount</div>
+                </div>
+                
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="descriptionInput">
+                        <i class="fas fa-file-alt"></i> Description (Optional)
+                    </label>
+                    <textarea 
+                        name="description" 
+                        id="descriptionInput" 
+                        class="description-input" 
+                        placeholder="Add a note about this transaction..."></textarea>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-plus"></i>
+                    <span id="btnText">Add Transaction</span>
+                    <span id="btnLoading" class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Adding...
+                    </span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Categories for income and expense
+        const incomeCategories = [
+            { value: 'Salary', icon: '💼', text: 'Salary' },
+            { value: 'Bonus', icon: '🎁', text: 'Bonus' },
+            { value: 'Freelance', icon: '💻', text: 'Freelance' },
+            { value: 'Investment', icon: '📈', text: 'Investment' },
+            { value: 'Gift', icon: '🎯', text: 'Gift' },
+            { value: 'Other Income', icon: '💰', text: 'Other Income' }
+        ];
+        
+        const expenseCategories = [
+            { value: 'Food', icon: '🍔', text: 'Food & Dining' },
+            { value: 'Transport', icon: '🚗', text: 'Transportation' },
+            { value: 'Entertainment', icon: '🎬', text: 'Entertainment' },
+            { value: 'Bills', icon: '📱', text: 'Bills & Utilities' },
+            { value: 'Shopping', icon: '🛍️', text: 'Shopping' },
+            { value: 'Health', icon: '🏥', text: 'Health & Medical' },
+            { value: 'Other Expense', icon: '📦', text: 'Other Expense' }
+        ];
+        
+        function updateCategories() {
+            const typeSelect = document.querySelector('input[name="type"]:checked');
+            const categorySelect = document.getElementById('categorySelect');
+            
+            // Clear existing options
+            categorySelect.innerHTML = '';
+            categorySelect.disabled = true;
+            
+            if (typeSelect) {
+                const selectedType = typeSelect.value;
+                const categories = selectedType === 'income' ? incomeCategories : expenseCategories;
+                
+                // Add categories with icons
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.value;
+                    option.textContent = `${cat.icon} ${cat.text}`;
+                    categorySelect.appendChild(option);
+                });
+                
+                categorySelect.disabled = false;
+                
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '📂 Select a category';
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                categorySelect.insertBefore(defaultOption, categorySelect.firstChild);
+            }
+        }
+        
+        function formatCurrency(input) {
+            // Backup cursor position
+            let cursorPos = input.selectionStart;
+            let originalLength = input.value.length;
+            
+            // Hapus semua karakter selain angka
+            let value = input.value.replace(/\D/g, '');
+            
+            // Format dengan titik
+            if (value.length > 0) {
+                value = parseInt(value, 10).toLocaleString('id-ID');
+            }
+            
+            // Update tampilan
+            input.value = value;
+            
+            // Simpan value asli (tanpa format) di hidden input
+            document.getElementById('amountRaw').value = value.replace(/\./g, '');
+            
+            // Adjust cursor position
+            let newLength = input.value.length;
+            let cursorAdjust = newLength - originalLength;
+            input.setSelectionRange(cursorPos + cursorAdjust, cursorPos + cursorAdjust);
+        }
+        
+        // Form submission
+        document.getElementById('expenseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const typeSelected = document.querySelector('input[name="type"]:checked');
+            const categorySelect = document.getElementById('categorySelect');
+            const amountRaw = document.getElementById('amountRaw');
+            
+            // Reset errors
+            document.getElementById('categoryError').style.display = 'none';
+            document.getElementById('amountError').style.display = 'none';
+            
+            let isValid = true;
+            
+            // Validate type
+            if (!typeSelected) {
+                alert('Please select transaction type (Income or Expense)');
+                isValid = false;
+            }
+            
+            // Validate category
+            if (!categorySelect.value || categorySelect.disabled) {
+                document.getElementById('categoryError').style.display = 'block';
+                isValid = false;
+            }
+            
+            // Validate amount
+            if (!amountRaw.value || amountRaw.value === '0') {
+                document.getElementById('amountError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Show loading
+                document.getElementById('btnText').style.display = 'none';
+                document.getElementById('btnLoading').style.display = 'inline';
+                document.getElementById('submitBtn').disabled = true;
+                
+                // Submit form
+                this.submit();
+            }
+        });
+        
+        // Auto-focus amount input when category is selected
+        document.getElementById('categorySelect').addEventListener('change', function() {
+            if (this.value) {
+                document.getElementById('amountInput').focus();
+            }
+        });
+    </script>
+</body>
+</html>
