@@ -31,6 +31,33 @@ A simple and elegant web application for tracking personal income and expenses b
 - **Icons**: Font Awesome
 - **Fonts**: Inter (Google Fonts)
 
+## Deployment
+
+### Deploy to Vercel
+
+1. **Fork/Clone this repository**
+
+2. **Connect to Vercel**
+   - Go to [vercel.com](https://vercel.com)
+   - Import your GitHub repository
+   - Vercel will automatically detect it's a Python project
+
+3. **Environment Variables** (Optional)
+   - Set `SECRET_KEY` for production security
+   - Set `VERCEL=1` (automatically set by Vercel)
+
+4. **Deploy**
+   - Vercel will automatically build and deploy
+   - Your app will be available at `https://your-app.vercel.app`
+
+**Note**: Vercel uses serverless functions, so the SQLite database will reset on each deployment. For production, consider using a persistent database like PostgreSQL or MongoDB.
+
+### Deploy to Other Platforms
+
+- **Heroku**: Add `Procfile` with `web: gunicorn app:app`
+- **Railway**: Works out of the box with `requirements.txt`
+- **Render**: Use `gunicorn app:app` as start command
+
 ## Installation
 
 1. **Clone the repository**

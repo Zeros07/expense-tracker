@@ -2,9 +2,12 @@ import sqlite3
 import os
 import hashlib
 
+# Database path - use /tmp for serverless environments
+DB_PATH = os.environ.get('DATABASE_URL', '/tmp/expenses.db') if os.environ.get('VERCEL') else 'expenses.db'
+
 def init_db():
     """Initialize database and create tables"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     
     # Create users table
@@ -42,7 +45,7 @@ def hash_password(password):
 
 def create_user(username, password):
     """Create new user"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     try:
         hashed_password = hash_password(password)
@@ -57,7 +60,7 @@ def create_user(username, password):
 
 def get_user_by_username(username):
     """Get user by username"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("SELECT * FROM users WHERE username = ?", (username,))
     user = c.fetchone()
@@ -66,7 +69,7 @@ def get_user_by_username(username):
 
 def add_expense(user_id, type_, category, amount, description):
     """Add new expense/income"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''INSERT INTO expenses (user_id, type, category, amount, description)
                  VALUES (?, ?, ?, ?, ?)''',
@@ -76,7 +79,7 @@ def add_expense(user_id, type_, category, amount, description):
 
 def get_user_expenses(user_id):
     """Get all expenses for a user"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''SELECT * FROM expenses 
                  WHERE user_id = ? 
@@ -89,7 +92,7 @@ def get_user_expenses(user_id):
 
 def get_expense_by_id(expense_id, user_id):
     """Get single expense by ID for editing"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("SELECT * FROM expenses WHERE id = ? AND user_id = ?", (expense_id, user_id))
     expense = c.fetchone()
@@ -98,7 +101,7 @@ def get_expense_by_id(expense_id, user_id):
 
 def update_expense(expense_id, user_id, type_, category, amount, description):
     """Update existing expense"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''UPDATE expenses 
                  SET type = ?, category = ?, amount = ?, description = ?
@@ -109,7 +112,7 @@ def update_expense(expense_id, user_id, type_, category, amount, description):
 
 def delete_expense(expense_id, user_id):
     """Delete expense"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("DELETE FROM expenses WHERE id = ? AND user_id = ?", (expense_id, user_id))
     conn.commit()
@@ -117,7 +120,7 @@ def delete_expense(expense_id, user_id):
 
 def get_monthly_summary(user_id, year):
     """Get monthly summary for the year"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     
     query = '''
@@ -154,7 +157,7 @@ def get_monthly_summary(user_id, year):
 
 def get_detailed_monthly_data(user_id, year, month=None):
     """Get detailed monthly data with category breakdown"""
-    conn = sqlite3.connect('expenses.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     
     if month:

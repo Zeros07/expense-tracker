@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, session, flash
 import database as db
 from datetime import datetime
+import os
 
 app = Flask(__name__)
-app.secret_key = "secret123"
+app.secret_key = os.environ.get("SECRET_KEY", "secret123")
 
 # Initialize database
 db.init_db()
@@ -94,21 +95,40 @@ def add_expense():
         return redirect("/login")
 
     if request.method == "POST":
-        type_ = request.form["type"]
-        category = request.form["category"]
+        try:
+            type_ = request.form.get("type", "")
+            category = request.form.get("category", "")
+            amount_str = request.form.get("amount_raw", "0")
+            description = request.form.get("description", "")
+            
+            # Validation
+            if not type_ or not category:
+                flash("Please fill all required fields")
+                return render_template("add_expense.html")
+            
+            # Convert amount
+            try:
+                amount = float(amount_str) if amount_str else 0
+                if amount <= 0:
+                    flash("Please enter a valid amount")
+                    return render_template("add_expense.html")
+            except ValueError:
+                flash("Please enter a valid amount")
+                return render_template("add_expense.html")
 
-        amount_str = request.form["amount_raw"]
-        amount = float(amount_str) if amount_str else 0
+            # Add to database
+            db.add_expense(session["user_id"], type_, category, amount, description)
 
-        description = request.form["description"]
-
-        db.add_expense(session["user_id"], type_, category, amount, description)
-
-        # Redirect dengan parameter untuk notifikasi
-        if type_ == "income":
-            return redirect("/?notification=income_success")
-        else:
-            return redirect("/?notification=expense_success")
+            # Redirect dengan parameter untuk notifikasi
+            if type_ == "income":
+                return redirect("/?notification=income_success")
+            else:
+                return redirect("/?notification=expense_success")
+                
+        except Exception as e:
+            print(f"Error in add_expense: {str(e)}")
+            flash("An error occurred while saving the transaction")
+            return render_template("add_expense.html")
 
     return render_template("add_expense.html")
 
@@ -118,23 +138,43 @@ def edit_expense(expense_id):
     if "user_id" not in session:
         return redirect("/login")
     
-    expense = db.get_expense_by_id(expense_id, session["user_id"])
-    if not expense:
-        flash("Transaction not found")
-        return redirect("/")
-    
-    if request.method == "POST":
-        type_ = request.form["type"]
-        category = request.form["category"]
-        amount_str = request.form["amount_raw"]
-        amount = float(amount_str) if amount_str else 0
-        description = request.form["description"]
+    try:
+        expense = db.get_expense_by_id(expense_id, session["user_id"])
+        if not expense:
+            flash("Transaction not found")
+            return redirect("/")
         
-        db.update_expense(expense_id, session["user_id"], type_, category, amount, description)
-        flash("Transaction updated successfully!")
+        if request.method == "POST":
+            type_ = request.form.get("type", "")
+            category = request.form.get("category", "")
+            amount_str = request.form.get("amount_raw", "0")
+            description = request.form.get("description", "")
+            
+            # Validation
+            if not type_ or not category:
+                flash("Please fill all required fields")
+                return render_template("edit_expense.html", expense=expense)
+            
+            # Convert amount
+            try:
+                amount = float(amount_str) if amount_str else 0
+                if amount <= 0:
+                    flash("Please enter a valid amount")
+                    return render_template("edit_expense.html", expense=expense)
+            except ValueError:
+                flash("Please enter a valid amount")
+                return render_template("edit_expense.html", expense=expense)
+            
+            db.update_expense(expense_id, session["user_id"], type_, category, amount, description)
+            flash("Transaction updated successfully!")
+            return redirect("/")
+        
+        return render_template("edit_expense.html", expense=expense)
+        
+    except Exception as e:
+        print(f"Error in edit_expense: {str(e)}")
+        flash("An error occurred while processing the transaction")
         return redirect("/")
-    
-    return render_template("edit_expense.html", expense=expense)
 
 @app.route("/delete/<int:expense_id>", methods=["POST"])
 def delete_expense_route(expense_id):
@@ -155,34 +195,40 @@ def monthly_report():
     if "user_id" not in session:
         return redirect("/login")
     
-    current_year = datetime.now().year
-    year = int(request.args.get('year', current_year))
-    month = request.args.get('month', '')
-    
-    # Generate year range (current year + 1 to current year - 5)
-    years = list(range(current_year + 1, current_year - 6, -1))
-    
-    # Get monthly summary for chart
-    monthly_data = db.get_monthly_summary(session["user_id"], year)
-    
-    # Get detailed data for breakdown
-    selected_month = int(month) if month else None
-    detailed_data = db.get_detailed_monthly_data(session["user_id"], year, selected_month)
-    
-    # Month names for display
-    month_names = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ]
-    
-    return render_template("monthly_report.html", 
-                         monthly_data=monthly_data,
-                         detailed_data=detailed_data,
-                         selected_year=str(year),
-                         selected_month=month,
-                         username=session["username"],
-                         years=years,
-                         month_names=month_names)
+    try:
+        current_year = datetime.now().year
+        year = int(request.args.get('year', current_year))
+        month = request.args.get('month', '')
+        
+        # Generate year range (current year + 1 to current year - 5)
+        years = list(range(current_year + 1, current_year - 6, -1))
+        
+        # Get monthly summary for chart
+        monthly_data = db.get_monthly_summary(session["user_id"], year)
+        
+        # Get detailed data for breakdown
+        selected_month = int(month) if month else None
+        detailed_data = db.get_detailed_monthly_data(session["user_id"], year, selected_month)
+        
+        # Month names for display
+        month_names = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ]
+        
+        return render_template("monthly_report.html", 
+                             monthly_data=monthly_data,
+                             detailed_data=detailed_data,
+                             selected_year=str(year),
+                             selected_month=month,
+                             username=session["username"],
+                             years=years,
+                             month_names=month_names)
+                             
+    except Exception as e:
+        print(f"Error in monthly_report: {str(e)}")
+        flash("An error occurred while generating the report")
+        return redirect("/")
 
 @app.route("/logout")
 def logout():
