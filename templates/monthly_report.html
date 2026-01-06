@@ -139,13 +139,13 @@
             font-weight: 600;
             color: #1a202c;
             margin-bottom: 20px;
+            text-align: center;
         }
         
         .yearly-summary {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
         }
         
         .yearly-card {
@@ -154,17 +154,24 @@
             padding: 20px;
             border-radius: 12px;
             text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .yearly-card h3 {
             font-size: 14px;
             margin-bottom: 8px;
             opacity: 0.9;
+            font-weight: 500;
         }
         
         .yearly-card .amount {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
+            word-break: break-all;
+            line-height: 1.2;
         }
         
         .chart-container {
@@ -242,8 +249,8 @@
         }
         
         @media (max-width: 768px) {
-            .yearly-summary {
-                grid-template-columns: 1fr;
+            .container {
+                padding: 15px;
             }
             
             .header {
@@ -252,13 +259,198 @@
                 align-items: flex-start;
             }
             
+            .header h1 {
+                font-size: 20px;
+                line-height: 1.3;
+            }
+            
+            .filter-section {
+                width: 100%;
+                padding: 12px 15px;
+            }
+            
             .filter-form {
                 flex-direction: column;
                 gap: 10px;
+                align-items: stretch;
+            }
+            
+            .form-group {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .yearly-summary {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .yearly-card {
+                padding: 15px;
+            }
+            
+            .yearly-card h3 {
+                font-size: 12px;
+            }
+            
+            .yearly-card .amount {
+                font-size: 18px;
             }
             
             .breakdown-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .breakdown-card {
+                padding: 20px;
+            }
+            
+            .breakdown-title {
+                font-size: 16px;
+            }
+            
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .category-stats {
+                align-self: flex-end;
+            }
+            
+            .category-name {
+                font-size: 14px;
+            }
+            
+            .category-amount {
+                font-size: 14px;
+            }
+            
+            .transaction-detail {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+                padding: 8px 0;
+            }
+            
+            .transaction-desc {
+                margin-right: 0;
+                font-size: 12px;
+            }
+            
+            .transaction-amount {
+                font-size: 12px;
+                align-self: flex-end;
+            }
+            
+            .chart-wrapper {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .back-btn {
+                padding: 6px 12px;
+                font-size: 14px;
+                margin-right: 15px;
+            }
+            
+            .yearly-card {
+                padding: 12px;
+                text-align: left;
+            }
+            
+            .yearly-card h3 {
+                font-size: 11px;
+                margin-bottom: 6px;
+            }
+            
+            .yearly-card .amount {
+                font-size: 16px;
+            }
+            
+            .breakdown-card {
+                padding: 15px;
+            }
+            
+            .breakdown-title {
+                font-size: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .category-detail {
+                margin-bottom: 15px;
+                padding-bottom: 12px;
+            }
+            
+            .category-name {
+                font-size: 13px;
+                font-weight: 600;
+            }
+            
+            .category-amount {
+                font-size: 13px;
+            }
+            
+            .category-percentage {
+                font-size: 11px;
+                padding: 1px 4px;
+            }
+            
+            .transaction-summary {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .toggle-details {
+                align-self: flex-end;
+                font-size: 11px;
+                padding: 3px 6px;
+            }
+            
+            .chart-wrapper {
+                height: 200px;
+            }
+            
+            .section-title {
+                font-size: 18px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .header h1 {
+                font-size: 16px;
+            }
+            
+            .yearly-card .amount {
+                font-size: 14px;
+            }
+            
+            .category-name {
+                font-size: 12px;
+            }
+            
+            .category-amount {
+                font-size: 12px;
+            }
+            
+            .transaction-desc {
+                font-size: 11px;
+            }
+            
+            .transaction-amount {
+                font-size: 11px;
             }
         }
         
@@ -286,6 +478,7 @@
             padding: 25px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             border: 1px solid #e2e8f0;
+            overflow: hidden;
         }
         
         .breakdown-title {
@@ -295,6 +488,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f7fafc;
         }
         
         .expense-title {
@@ -319,24 +514,30 @@
         .category-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 8px;
+            gap: 10px;
         }
         
         .category-name {
             font-weight: 600;
             color: #1a202c;
+            flex: 1;
+            word-break: break-word;
         }
         
         .category-stats {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+            flex-shrink: 0;
         }
         
         .category-amount {
             font-weight: 600;
             color: #4a5568;
+            font-size: 14px;
         }
         
         .category-percentage {
@@ -384,20 +585,29 @@
         .transaction-detail {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
+            align-items: flex-start;
+            padding: 8px 0;
             font-size: 13px;
+            gap: 10px;
+            border-bottom: 1px solid #f8fafc;
+        }
+        
+        .transaction-detail:last-child {
+            border-bottom: none;
         }
         
         .transaction-desc {
             color: #718096;
             flex: 1;
-            margin-right: 10px;
+            word-break: break-word;
+            line-height: 1.3;
         }
         
         .transaction-amount {
             color: #4a5568;
             font-weight: 500;
+            flex-shrink: 0;
+            text-align: right;
         }
         
         .transaction-summary {
@@ -405,6 +615,8 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f8fafc;
         }
         
         .transaction-count {
@@ -421,6 +633,7 @@
             padding: 4px 8px;
             border-radius: 4px;
             transition: background 0.3s ease;
+            font-weight: 500;
         }
         
         .toggle-details:hover {
