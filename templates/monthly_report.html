@@ -313,36 +313,62 @@
             .category-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 5px;
+                gap: 8px;
+                margin-bottom: 15px;
             }
             
             .category-stats {
-                align-self: flex-end;
+                align-self: stretch;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                background: #f8fafc;
+                padding: 8px 12px;
+                border-radius: 8px;
+                margin-top: 5px;
             }
             
             .category-name {
-                font-size: 14px;
+                font-size: 15px;
+                margin-bottom: 0;
             }
             
             .category-amount {
                 font-size: 14px;
+                font-weight: 700;
+            }
+            
+            .category-percentage {
+                font-size: 12px;
+                background: #667eea;
+                color: white;
+                padding: 3px 8px;
             }
             
             .transaction-detail {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 2px;
-                padding: 8px 0;
+                gap: 4px;
+                padding: 10px 0;
+                background: #fafbfc;
+                margin: 2px 0;
+                padding: 8px 12px;
+                border-radius: 6px;
+                border: none;
             }
             
             .transaction-desc {
                 margin-right: 0;
-                font-size: 12px;
+                font-size: 13px;
+                font-weight: 500;
+                color: #4a5568;
             }
             
             .transaction-amount {
-                font-size: 12px;
+                font-size: 13px;
                 align-self: flex-end;
+                font-weight: 600;
+                color: #2d3748;
             }
             
             .chart-wrapper {
@@ -389,13 +415,22 @@
             }
             
             .category-detail {
-                margin-bottom: 15px;
-                padding-bottom: 12px;
+                margin-bottom: 20px;
+                padding: 15px;
+                background: #fafbfc;
+                border-radius: 12px;
+                border: 1px solid #e2e8f0;
             }
             
             .category-name {
-                font-size: 13px;
-                font-weight: 600;
+                font-size: 14px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+            
+            .category-stats {
+                padding: 6px 10px;
+                border-radius: 6px;
             }
             
             .category-amount {
@@ -404,19 +439,38 @@
             
             .category-percentage {
                 font-size: 11px;
-                padding: 1px 4px;
+                padding: 2px 6px;
+            }
+            
+            .transaction-detail {
+                padding: 6px 10px;
+                margin: 1px 0;
+            }
+            
+            .transaction-desc {
+                font-size: 12px;
+            }
+            
+            .transaction-amount {
+                font-size: 12px;
             }
             
             .transaction-summary {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+                padding: 8px 10px;
+                background: #f0f4f8;
+                border-radius: 6px;
+                margin-top: 8px;
             }
             
             .toggle-details {
-                align-self: flex-end;
                 font-size: 11px;
-                padding: 3px 6px;
+                padding: 4px 8px;
+                background: #667eea;
+                color: white;
+                border-radius: 4px;
             }
             
             .chart-wrapper {
@@ -437,12 +491,30 @@
                 font-size: 14px;
             }
             
+            .breakdown-card {
+                padding: 12px;
+            }
+            
+            .category-detail {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            
             .category-name {
-                font-size: 12px;
+                font-size: 13px;
+            }
+            
+            .category-stats {
+                padding: 5px 8px;
             }
             
             .category-amount {
                 font-size: 12px;
+            }
+            
+            .category-percentage {
+                font-size: 10px;
+                padding: 2px 4px;
             }
             
             .transaction-desc {
@@ -451,6 +523,15 @@
             
             .transaction-amount {
                 font-size: 11px;
+            }
+            
+            .transaction-summary {
+                padding: 6px 8px;
+            }
+            
+            .toggle-details {
+                font-size: 10px;
+                padding: 3px 6px;
             }
         }
         
@@ -515,8 +596,8 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 8px;
-            gap: 10px;
+            margin-bottom: 12px;
+            gap: 15px;
         }
         
         .category-name {
@@ -524,28 +605,33 @@
             color: #1a202c;
             flex: 1;
             word-break: break-word;
+            line-height: 1.4;
+            min-width: 0;
         }
         
         .category-stats {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 2px;
+            gap: 4px;
             flex-shrink: 0;
+            min-width: 80px;
         }
         
         .category-amount {
             font-weight: 600;
             color: #4a5568;
             font-size: 14px;
+            white-space: nowrap;
         }
         
         .category-percentage {
-            font-size: 12px;
+            font-size: 11px;
             color: #718096;
             background: #f7fafc;
             padding: 2px 6px;
             border-radius: 4px;
+            white-space: nowrap;
         }
         
         .category-progress {
