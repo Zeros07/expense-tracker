@@ -28,13 +28,58 @@
         .header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
         
         .header-left {
             display: flex;
             align-items: center;
+            flex: 1;
+        }
+        
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .filter-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 120px;
+        }
+        
+        .form-group label {
+            font-size: 12px;
+            color: #4a5568;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
         }
         
         .back-btn {
@@ -206,6 +251,180 @@
                 gap: 15px;
                 align-items: flex-start;
             }
+            
+            .filter-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Breakdown Section Styles */
+        .breakdown-section {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 20px;
+        }
+        
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .breakdown-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .breakdown-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .expense-title {
+            color: #f56565;
+        }
+        
+        .income-title {
+            color: #48bb78;
+        }
+        
+        .category-detail {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f7fafc;
+        }
+        
+        .category-detail:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            color: #1a202c;
+        }
+        
+        .category-stats {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .category-amount {
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .category-percentage {
+            font-size: 12px;
+            color: #718096;
+            background: #f7fafc;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .category-progress {
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .expense-fill {
+            background: linear-gradient(90deg, #f56565, #e53e3e);
+        }
+        
+        .income-fill {
+            background: linear-gradient(90deg, #48bb78, #38a169);
+        }
+        
+        .transaction-list {
+            margin-top: 8px;
+        }
+        
+        .transaction-list.hidden {
+            display: none;
+        }
+        
+        .transaction-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+        
+        .transaction-desc {
+            color: #718096;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .transaction-amount {
+            color: #4a5568;
+            font-weight: 500;
+        }
+        
+        .transaction-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+        
+        .transaction-count {
+            font-size: 12px;
+            color: #718096;
+        }
+        
+        .toggle-details {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        
+        .toggle-details:hover {
+            background: rgba(102, 126, 234, 0.1);
         }
     </style>
 </head>
@@ -216,42 +435,164 @@
                 <a href="/" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Dashboard
                 </a>
-                <h1>Monthly Report {{ selected_year }}</h1>
+                <h1>Financial Report {{ selected_year }}{% if selected_month %} - {{ month_names[selected_month|int - 1] }}{% endif %}</h1>
             </div>
-            <div class="year-selector">
-                <label for="yearSelect">Year:</label>
-                <select id="yearSelect" onchange="changeYear()">
-                    {% for year in years %}
-                    <option value="{{ year }}" {% if selected_year == year|string %}selected{% endif %}>{{ year }}</option>
-                    {% endfor %}
-                </select>
+            <div class="filter-section">
+                <form method="GET" class="filter-form">
+                    <div class="form-group">
+                        <label for="yearSelect">Year:</label>
+                        <select name="year" id="yearSelect" onchange="this.form.submit()">
+                            {% for year in years %}
+                            <option value="{{ year }}" {% if selected_year == year|string %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="monthSelect">Month:</label>
+                        <select name="month" id="monthSelect" onchange="this.form.submit()">
+                            <option value="">All Months</option>
+                            {% for i in range(1, 13) %}
+                            <option value="{{ i }}" {% if selected_month == i|string %}selected{% endif %}>{{ month_names[i-1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
             </div>
         </div>
         
-        <!-- Yearly Summary -->
+        <!-- Summary Section -->
         <div class="summary-section">
-            <h2 class="summary-title">{{ selected_year }} Summary</h2>
+            <h2 class="summary-title">
+                {% if selected_month %}
+                {{ month_names[selected_month|int - 1] }} {{ selected_year }} Summary
+                {% else %}
+                {{ selected_year }} Summary
+                {% endif %}
+            </h2>
             <div class="yearly-summary">
                 <div class="yearly-card">
                     <h3>TOTAL INCOME</h3>
-                    <div class="amount" id="totalIncome">Rp0</div>
+                    <div class="amount" id="totalIncome">Rp{{ "{:,.0f}".format(detailed_data.total_income).replace(",", ".") }}</div>
                 </div>
                 <div class="yearly-card">
                     <h3>TOTAL EXPENSE</h3>
-                    <div class="amount" id="totalExpense">Rp0</div>
+                    <div class="amount" id="totalExpense">Rp{{ "{:,.0f}".format(detailed_data.total_expense).replace(",", ".") }}</div>
                 </div>
                 <div class="yearly-card">
                     <h3>NET BALANCE</h3>
-                    <div class="amount" id="netBalance">Rp0</div>
+                    <div class="amount" id="netBalance">Rp{{ "{:,.0f}".format(detailed_data.balance).replace(",", ".") }}</div>
                 </div>
             </div>
         </div>
         
-        <!-- Monthly Trend Chart -->
+        {% if not selected_month %}
+        <!-- Monthly Trend Chart (only show for yearly view) -->
         <div class="chart-container">
             <h3 class="chart-title">Monthly Trend</h3>
             <div class="chart-wrapper">
                 <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Detailed Category Breakdown -->
+        <div class="breakdown-section">
+            <h3 class="section-title">Category Breakdown</h3>
+            
+            <div class="breakdown-grid">
+                {% if detailed_data.expense_categories %}
+                <div class="breakdown-card">
+                    <h4 class="breakdown-title expense-title">
+                        <i class="fas fa-arrow-up"></i> Expenses
+                    </h4>
+                    {% for category, data in detailed_data.expense_categories.items() %}
+                    <div class="category-detail">
+                        <div class="category-header">
+                            <span class="category-name">{{ category }}</span>
+                            <div class="category-stats">
+                                <span class="category-amount">Rp{{ "{:,.0f}".format(data.total).replace(",", ".") }}</span>
+                                <span class="category-percentage">{{ data.percentage }}%</span>
+                            </div>
+                        </div>
+                        <div class="category-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill expense-fill" data-width="{{ data.percentage }}"></div>
+                            </div>
+                        </div>
+                        {% if data.transactions|length <= 3 %}
+                        <div class="transaction-list">
+                            {% for transaction in data.transactions %}
+                            <div class="transaction-detail">
+                                <span class="transaction-desc">{{ transaction.description or 'No description' }}</span>
+                                <span class="transaction-amount">Rp{{ "{:,.0f}".format(transaction.amount).replace(",", ".") }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="transaction-summary">
+                            <span class="transaction-count">{{ data.transactions|length }} transactions</span>
+                            <button class="toggle-details" onclick="toggleTransactions(this)">Show Details</button>
+                        </div>
+                        <div class="transaction-list hidden">
+                            {% for transaction in data.transactions %}
+                            <div class="transaction-detail">
+                                <span class="transaction-desc">{{ transaction.description or 'No description' }}</span>
+                                <span class="transaction-amount">Rp{{ "{:,.0f}".format(transaction.amount).replace(",", ".") }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if detailed_data.income_categories %}
+                <div class="breakdown-card">
+                    <h4 class="breakdown-title income-title">
+                        <i class="fas fa-arrow-down"></i> Income
+                    </h4>
+                    {% for category, data in detailed_data.income_categories.items() %}
+                    <div class="category-detail">
+                        <div class="category-header">
+                            <span class="category-name">{{ category }}</span>
+                            <div class="category-stats">
+                                <span class="category-amount">Rp{{ "{:,.0f}".format(data.total).replace(",", ".") }}</span>
+                                <span class="category-percentage">{{ data.percentage }}%</span>
+                            </div>
+                        </div>
+                        <div class="category-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill income-fill" data-width="{{ data.percentage }}"></div>
+                            </div>
+                        </div>
+                        {% if data.transactions|length <= 3 %}
+                        <div class="transaction-list">
+                            {% for transaction in data.transactions %}
+                            <div class="transaction-detail">
+                                <span class="transaction-desc">{{ transaction.description or 'No description' }}</span>
+                                <span class="transaction-amount">Rp{{ "{:,.0f}".format(transaction.amount).replace(",", ".") }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="transaction-summary">
+                            <span class="transaction-count">{{ data.transactions|length }} transactions</span>
+                            <button class="toggle-details" onclick="toggleTransactions(this)">Show Details</button>
+                        </div>
+                        <div class="transaction-list hidden">
+                            {% for transaction in data.transactions %}
+                            <div class="transaction-detail">
+                                <span class="transaction-desc">{{ transaction.description or 'No description' }}</span>
+                                <span class="transaction-amount">Rp{{ "{:,.0f}".format(transaction.amount).replace(",", ".") }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </div>
         
@@ -291,25 +632,51 @@
         </div>
     </div>
 
+
+
     <!-- Hidden data for JavaScript -->
-    <script type="application/json" id="monthlyData">
-        {{ monthly_data | tojson }}
-    </script>
+    {% if not selected_month %}
+    <script type="application/json" id="monthlyData">{{ monthly_data | tojson }}</script>
+    {% endif %}
 
     <script>
-        function changeYear() {
-            const year = document.getElementById('yearSelect').value;
-            window.location.href = `/monthly-report?year=${year}`;
+        function toggleTransactions(button) {
+            const transactionList = button.parentElement.nextElementSibling;
+            const isHidden = transactionList.classList.contains('hidden');
+            
+            if (isHidden) {
+                transactionList.classList.remove('hidden');
+                button.textContent = 'Hide Details';
+            } else {
+                transactionList.classList.add('hidden');
+                button.textContent = 'Show Details';
+            }
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Get monthly data
-            const monthlyData = JSON.parse(document.getElementById('monthlyData').textContent);
+            // Set progress bar widths
+            setProgressBarWidths();
             
-            // Calculate yearly totals
-            let totalIncome = 0;
-            let totalExpense = 0;
+            // Initialize chart for yearly view if data exists
+            const monthlyDataEl = document.getElementById('monthlyData');
+            if (monthlyDataEl) {
+                initializeYearlyChart();
+            }
+        });
+        
+        function setProgressBarWidths() {
+            const progressFills = document.querySelectorAll('.progress-fill[data-width]');
+            progressFills.forEach(fill => {
+                const width = fill.getAttribute('data-width');
+                fill.style.width = width + '%';
+            });
+        }
+        
+        function initializeYearlyChart() {
+            const monthlyDataEl = document.getElementById('monthlyData');
+            if (!monthlyDataEl) return;
             
+            const monthlyData = JSON.parse(monthlyDataEl.textContent);
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             const incomeData = [];
@@ -320,111 +687,100 @@
                 const monthKey = i.toString().padStart(2, '0');
                 const data = monthlyData[monthKey];
                 
-                totalIncome += data.income;
-                totalExpense += data.expense;
-                
                 incomeData.push(data.income);
                 expenseData.push(data.expense);
                 balanceData.push(data.balance);
             }
             
-            const netBalance = totalIncome - totalExpense;
-            
-            // Update yearly summary
-            document.getElementById('totalIncome').textContent = 
-                'Rp' + totalIncome.toLocaleString('id-ID');
-            document.getElementById('totalExpense').textContent = 
-                'Rp' + totalExpense.toLocaleString('id-ID');
-            document.getElementById('netBalance').textContent = 
-                'Rp' + netBalance.toLocaleString('id-ID');
-            
             // Create chart
-            const ctx = document.getElementById('monthlyChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: months,
-                    datasets: [
-                        {
-                            label: 'Income',
-                            data: incomeData,
-                            borderColor: '#48bb78',
-                            backgroundColor: 'rgba(72, 187, 120, 0.1)',
-                            borderWidth: 3,
-                            fill: false,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Expense',
-                            data: expenseData,
-                            borderColor: '#f56565',
-                            backgroundColor: 'rgba(245, 101, 101, 0.1)',
-                            borderWidth: 3,
-                            fill: false,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Balance',
-                            data: balanceData,
-                            borderColor: '#667eea',
-                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                            borderWidth: 3,
-                            fill: false,
-                            tension: 0.4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                usePointStyle: true,
-                                pointStyle: 'circle',
-                                font: {
-                                    size: 12,
-                                    family: 'Inter'
-                                },
-                                color: '#4a5568'
+            const ctx = document.getElementById('monthlyChart');
+            if (ctx) {
+                new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [
+                            {
+                                label: 'Income',
+                                data: incomeData,
+                                borderColor: '#48bb78',
+                                backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                                borderWidth: 3,
+                                fill: false,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Expense',
+                                data: expenseData,
+                                borderColor: '#f56565',
+                                backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                                borderWidth: 3,
+                                fill: false,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Balance',
+                                data: balanceData,
+                                borderColor: '#667eea',
+                                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                                borderWidth: 3,
+                                fill: false,
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    pointStyle: 'circle',
+                                    font: {
+                                        size: 12,
+                                        family: 'Inter'
+                                    },
+                                    color: '#4a5568'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.raw || 0;
+                                        return label + ': Rp' + value.toLocaleString('id-ID');
+                                    }
+                                }
                             }
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.dataset.label || '';
-                                    const value = context.raw || 0;
-                                    return label + ': Rp' + value.toLocaleString('id-ID');
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rp' + value.toLocaleString('id-ID');
+                                    },
+                                    color: '#718096'
+                                },
+                                grid: {
+                                    color: '#e2e8f0'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#718096'
+                                },
+                                grid: {
+                                    color: '#e2e8f0'
                                 }
                             }
                         }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return 'Rp' + value.toLocaleString('id-ID');
-                                },
-                                color: '#718096'
-                            },
-                            grid: {
-                                color: '#e2e8f0'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#718096'
-                            },
-                            grid: {
-                                color: '#e2e8f0'
-                            }
-                        }
                     }
-                }
-            });
-        });
+                });
+            }
+        }
     </script>
 </body>
 </html>

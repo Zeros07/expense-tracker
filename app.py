@@ -156,17 +156,33 @@ def monthly_report():
         return redirect("/login")
     
     current_year = datetime.now().year
-    year = request.args.get('year', str(current_year))
-    monthly_data = db.get_monthly_summary(session["user_id"], year)
+    year = int(request.args.get('year', current_year))
+    month = request.args.get('month', '')
     
     # Generate year range (current year + 1 to current year - 5)
     years = list(range(current_year + 1, current_year - 6, -1))
     
+    # Get monthly summary for chart
+    monthly_data = db.get_monthly_summary(session["user_id"], year)
+    
+    # Get detailed data for breakdown
+    selected_month = int(month) if month else None
+    detailed_data = db.get_detailed_monthly_data(session["user_id"], year, selected_month)
+    
+    # Month names for display
+    month_names = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ]
+    
     return render_template("monthly_report.html", 
-                         monthly_data=monthly_data, 
-                         selected_year=year,
+                         monthly_data=monthly_data,
+                         detailed_data=detailed_data,
+                         selected_year=str(year),
+                         selected_month=month,
                          username=session["username"],
-                         years=years)
+                         years=years,
+                         month_names=month_names)
 
 @app.route("/logout")
 def logout():

@@ -151,3 +151,74 @@ def get_monthly_summary(user_id, year):
             monthly_data[month]['balance'] = monthly_data[month]['income'] - monthly_data[month]['expense']
     
     return monthly_data
+
+def get_detailed_monthly_data(user_id, year, month=None):
+    """Get detailed monthly data with category breakdown"""
+    conn = sqlite3.connect('expenses.db')
+    c = conn.cursor()
+    
+    if month:
+        # Get specific month data
+        query = '''
+        SELECT type, category, amount, description, date
+        FROM expenses 
+        WHERE user_id = ? AND strftime('%Y', date) = ? AND strftime('%m', date) = ?
+        ORDER BY date DESC
+        '''
+        c.execute(query, (user_id, str(year), f"{month:02d}"))
+    else:
+        # Get full year data
+        query = '''
+        SELECT type, category, amount, description, date
+        FROM expenses 
+        WHERE user_id = ? AND strftime('%Y', date) = ?
+        ORDER BY date DESC
+        '''
+        c.execute(query, (user_id, str(year)))
+    
+    transactions = c.fetchall()
+    conn.close()
+    
+    # Process data
+    income_categories = {}
+    expense_categories = {}
+    total_income = 0
+    total_expense = 0
+    
+    for type_, category, amount, description, date in transactions:
+        if type_ == 'income':
+            total_income += amount
+            if category not in income_categories:
+                income_categories[category] = {'total': 0, 'transactions': []}
+            income_categories[category]['total'] += amount
+            income_categories[category]['transactions'].append({
+                'amount': amount,
+                'description': description,
+                'date': date
+            })
+        else:
+            total_expense += amount
+            if category not in expense_categories:
+                expense_categories[category] = {'total': 0, 'transactions': []}
+            expense_categories[category]['total'] += amount
+            expense_categories[category]['transactions'].append({
+                'amount': amount,
+                'description': description,
+                'date': date
+            })
+    
+    # Calculate percentages
+    for category in income_categories:
+        income_categories[category]['percentage'] = round((income_categories[category]['total'] / total_income) * 100, 1) if total_income > 0 else 0
+    
+    for category in expense_categories:
+        expense_categories[category]['percentage'] = round((expense_categories[category]['total'] / total_expense) * 100, 1) if total_expense > 0 else 0
+    
+    return {
+        'income_categories': income_categories,
+        'expense_categories': expense_categories,
+        'total_income': total_income,
+        'total_expense': total_expense,
+        'balance': total_income - total_expense,
+        'transaction_count': len(transactions)
+    }
